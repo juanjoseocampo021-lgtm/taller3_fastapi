@@ -17,6 +17,11 @@ ALLOWED_HOSTS = os.getenv(
     "127.0.0.1,localhost"
 ).split(",")
 
+CSRF_TRUSTED_ORIGINS = os.getenv(
+    "CSRF_TRUSTED_ORIGINS",
+    "http://127.0.0.1,http://localhost"
+).split(",")
+
 # URL base de la API FastAPI de predicción de precios (Taller3)
 
 
