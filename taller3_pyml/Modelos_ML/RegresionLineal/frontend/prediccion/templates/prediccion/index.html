@@ -2,196 +2,243 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Tasador de Viviendas</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Ficha de Avalúo · Tasador de Viviendas</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --paper: #f6f1e7;
+            --card: #fffdf8;
+            --ink: #1c2b3a;
+            --ink-soft: #4a5a68;
+            --line: #c9beac;
+            --gold: #a8781f;
+            --gold-dark: #8a611a;
+            --terracotta: #9c4a3a;
+            --terracotta-bg: #f7ece9;
+        }
         * { box-sizing: border-box; }
         body {
-            font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
-            background: linear-gradient(180deg, #eef2ff 0%, #e0e7ff 100%);
-            color: #1e293b;
+            font-family: "Source Serif 4", Georgia, serif;
+            background: var(--paper);
+            background-image:
+                linear-gradient(var(--line) 1px, transparent 1px),
+                linear-gradient(90deg, var(--line) 1px, transparent 1px);
+            background-size: 28px 28px;
+            background-position: -1px -1px;
+            color: var(--ink);
             display: flex;
             justify-content: center;
             align-items: flex-start;
             min-height: 100vh;
-            padding: 56px 16px;
+            padding: 64px 16px;
             margin: 0;
         }
-        .card {
-            background: #ffffff;
-            border-radius: 16px;
-            padding: 36px 32px;
-            max-width: 400px;
+        .sheet {
+            background: var(--card);
+            border: 1px solid var(--ink);
+            max-width: 440px;
             width: 100%;
-            box-shadow: 0 20px 40px rgba(30, 41, 59, 0.12);
-            text-align: center;
+            box-shadow: 6px 6px 0 rgba(28, 43, 58, 0.08);
         }
-        .icon-house {
-            width: 56px;
-            height: 56px;
-            margin: 0 auto 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .sheet-head {
+            padding: 28px 32px 20px;
+            border-bottom: 1px solid var(--line);
+        }
+        .kicker {
+            font-family: "IBM Plex Mono", monospace;
+            font-size: 0.72rem;
+            letter-spacing: 0.02em;
+            color: var(--gold-dark);
+            margin: 0 0 10px;
         }
         h1 {
-            font-size: 1.6rem;
-            font-weight: 700;
-            margin: 0 0 28px;
-            color: #1e1b4b;
-            line-height: 1.25;
+            font-size: 1.65rem;
+            font-weight: 600;
+            margin: 0;
+            line-height: 1.3;
+            color: var(--ink);
+        }
+        .sketch {
+            padding: 22px 32px 4px;
+            display: flex;
+            justify-content: center;
+        }
+        .sketch svg { width: 100%; max-width: 260px; height: auto; }
+        .sheet-body { padding: 20px 32px 32px; }
+        .field-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 8px;
         }
         label {
-            display: block;
-            text-align: left;
-            margin-bottom: 8px;
-            font-size: 0.9rem;
-            color: #475569;
+            font-size: 0.95rem;
+            color: var(--ink-soft);
         }
-        .input-wrap {
-            position: relative;
-            margin-bottom: 20px;
+        .field-unit {
+            font-family: "IBM Plex Mono", monospace;
+            font-size: 0.75rem;
+            color: var(--ink-soft);
         }
-        .input-wrap svg {
-            position: absolute;
-            left: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #6366f1;
+        .input-line {
+            border-bottom: 2px solid var(--ink);
+            margin-bottom: 26px;
         }
         input[type="number"] {
             width: 100%;
-            padding: 12px 12px 12px 40px;
-            border-radius: 10px;
-            border: 1px solid #e2e8f0;
-            background: #f8fafc;
-            color: #1e293b;
-            font-size: 1rem;
+            border: none;
+            background: transparent;
+            padding: 6px 2px 10px;
+            font-family: "IBM Plex Mono", monospace;
+            font-size: 1.4rem;
+            color: var(--ink);
         }
-        input[type="number"]:focus {
-            outline: none;
-            border-color: #6366f1;
-            background: #fff;
-        }
+        input[type="number"]:focus { outline: none; }
+        input[type="number"]:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+        input::placeholder { color: #a9a196; }
+
         button {
             width: 100%;
-            padding: 13px 12px;
-            border-radius: 10px;
-            border: none;
-            background: #2563eb;
-            color: white;
-            font-size: 1rem;
-            font-weight: 600;
+            padding: 14px 12px;
+            border: 1px solid var(--ink);
+            background: var(--ink);
+            color: var(--paper);
+            font-family: "IBM Plex Mono", monospace;
+            font-size: 0.85rem;
+            letter-spacing: 0.03em;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
+            transition: background 0.15s ease, color 0.15s ease;
         }
-        button:hover {
-            background: #1d4ed8;
-        }
+        button:hover { background: var(--gold-dark); border-color: var(--gold-dark); }
+        button:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+
         .resultado {
-            margin-top: 24px;
-            padding: 18px;
-            border-radius: 12px;
-            background: #eef6f6;
-            border: 1px solid #cbe3e0;
-            text-align: left;
+            margin-top: 26px;
+            border: 1px solid var(--gold);
+            position: relative;
+            padding: 18px 20px 20px;
         }
-        .resultado .titulo {
+        .resultado::before {
+            content: "AVALÚO";
+            position: absolute;
+            top: -10px;
+            left: 16px;
+            background: var(--card);
+            padding: 0 8px;
+            font-family: "IBM Plex Mono", monospace;
+            font-size: 0.68rem;
+            letter-spacing: 0.06em;
+            color: var(--gold-dark);
+        }
+        .resultado .linea {
             display: flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: 700;
-            color: #0f172a;
-            margin-bottom: 8px;
+            justify-content: space-between;
+            font-family: "IBM Plex Mono", monospace;
+            font-size: 0.85rem;
+            color: var(--ink-soft);
+            padding: 6px 0;
+            border-bottom: 1px dashed var(--line);
         }
-        .resultado .titulo svg {
-            color: #16a34a;
-            flex-shrink: 0;
+        .resultado .linea:last-of-type { border-bottom: none; }
+        .resultado .valor {
+            color: var(--ink);
+            font-weight: 500;
         }
-        .resultado p {
-            margin: 0;
-            color: #334155;
-            font-size: 0.95rem;
-            line-height: 1.4;
+        .resultado .precio-total {
+            margin-top: 10px;
+            padding-top: 12px;
+            border-top: 1px solid var(--ink);
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
         }
-        .resultado .precio {
-            font-weight: 700;
-            color: #0f172a;
+        .resultado .precio-total .label { font-size: 0.85rem; color: var(--ink-soft); }
+        .resultado .precio-total .monto {
+            font-family: "IBM Plex Mono", monospace;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--gold-dark);
         }
+
         .error {
-            margin-top: 24px;
-            padding: 16px;
-            border-radius: 10px;
-            background: #fef2f2;
-            border: 1px solid #fecaca;
-            color: #b91c1c;
-            font-size: 0.9rem;
-            text-align: left;
+            margin-top: 26px;
+            padding: 14px 18px;
+            border-left: 3px solid var(--terracotta);
+            background: var(--terracotta-bg);
+            color: var(--terracotta);
+            font-size: 0.92rem;
+            line-height: 1.45;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            button { transition: none; }
         }
     </style>
 </head>
 <body>
-    <div class="card">
-        <div class="icon-house">
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M3 9.5 12 3l9 6.5"></path>
-                <path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"></path>
+    <div class="sheet">
+        <div class="sheet-head">
+            <p class="kicker">FICHA N.º 001 — MODELO DE REGRESIÓN LINEAL</p>
+            <h1>Tasador de Viviendas</h1>
+        </div>
+
+        <div class="sketch">
+            <svg viewBox="0 0 240 130" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M20 70 L120 15 L220 70" stroke="#1c2b3a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M32 62 V118 H208 V62" stroke="#1c2b3a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <rect x="100" y="80" width="40" height="38" stroke="#1c2b3a" stroke-width="1.3"/>
+                <line x1="120" y1="80" x2="120" y2="118" stroke="#1c2b3a" stroke-width="1"/>
+                <rect x="52" y="76" width="24" height="20" stroke="#a8781f" stroke-width="1.2"/>
+                <line x1="64" y1="76" x2="64" y2="96" stroke="#a8781f" stroke-width="0.8"/>
+                <line x1="52" y1="86" x2="76" y2="86" stroke="#a8781f" stroke-width="0.8"/>
+                <rect x="164" y="76" width="24" height="20" stroke="#a8781f" stroke-width="1.2"/>
+                <line x1="176" y1="76" x2="176" y2="96" stroke="#a8781f" stroke-width="0.8"/>
+                <line x1="164" y1="86" x2="188" y2="86" stroke="#a8781f" stroke-width="0.8"/>
+                <line x1="32" y1="122" x2="208" y2="122" stroke="#c9beac" stroke-width="1" stroke-dasharray="2 3"/>
             </svg>
         </div>
 
-        <h1>Tasador de<br>Viviendas</h1>
+        <div class="sheet-body">
+            <form method="post">
+                {% csrf_token %}
+                <div class="field-row">
+                    <label for="area_m2">Área de la vivienda</label>
+                    <span class="field-unit">m²</span>
+                </div>
+                <div class="input-line">
+                    <input
+                        type="number"
+                        id="area_m2"
+                        name="area_m2"
+                        step="0.1"
+                        min="0.1"
+                        placeholder="0.0"
+                        value="{{ area_ingresada|default:'' }}"
+                        required
+                    >
+                </div>
+                <button type="submit">CALCULAR VALOR ESTIMADO</button>
+            </form>
 
-        <form method="post">
-            {% csrf_token %}
-            <label for="area_m2">Área de la vivienda (m²)</label>
-            <div class="input-wrap">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 3 3 21"></path>
-                    <path d="m16 8 2 2"></path>
-                    <path d="m12 12 2 2"></path>
-                    <path d="m8 16 2 2"></path>
-                </svg>
-                <input
-                    type="number"
-                    id="area_m2"
-                    name="area_m2"
-                    step="0.1"
-                    min="0.1"
-                    placeholder="Ej: 85.5"
-                    value="{{ area_ingresada|default:'' }}"
-                    required
-                >
+            {% if resultado %}
+            <div class="resultado">
+                <div class="linea">
+                    <span>Área evaluada</span>
+                    <span class="valor">{{ resultado.area_m2 }} m²</span>
+                </div>
+                <div class="precio-total">
+                    <span class="label">Valor estimado</span>
+                    <span class="monto">${{ resultado.predicted_price }}</span>
+                </div>
             </div>
-            <button type="submit">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="4" y="3" width="16" height="18" rx="2"></rect>
-                    <path d="M8 8h8M8 12h8M8 16h5"></path>
-                </svg>
-                Calcular Precio
-            </button>
-        </form>
+            {% endif %}
 
-        {% if resultado %}
-        <div class="resultado">
-            <div class="titulo">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <path d="m9 12 2 2 4-4"></path>
-                </svg>
-                Predicción Exitosa
-            </div>
-            <p>
-                Una vivienda de {{ resultado.area_m2 }} m² tiene un valor estimado de:
-                <span class="precio">${{ resultado.predicted_price }}</span>
-            </p>
+            {% if error %}
+            <div class="error">{{ error }}</div>
+            {% endif %}
         </div>
-        {% endif %}
-
-        {% if error %}
-        <div class="error">{{ error }}</div>
-        {% endif %}
     </div>
 </body>
 </html>
