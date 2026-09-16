@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="es-CO">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visión Artificial - Detección en Tiempo Real</title>
+    <link rel="shortcut icon" href="logosena.png" type="image/x-icon">
+
+    <meta name="author" content="Carlos Andres Castro Jaramillo">
+    <meta name="description"
+        content="Visión Artificial con OpenCV: Detecta rostros en imágenes y video en tiempo real. Aprende a procesar imágenes usando Python y OpenCV.">
+    <meta name="keywords"
+        content="visión artificial, OpenCV, detección de rostros, procesamiento de imágenes, Python, machine learning, análisis de imágenes, cámara web, detección en tiempo real">
+
+    <meta name="theme-color" content="#0b0f19">
+    <meta name="MobileOptimized" content="width">
+    <meta name="HandheldFriendly" content="true">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- Google Fonts para un look moderno -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <!-- Iconos de Bootstrap -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="app-body d-flex flex-column min-vh-100">
+
+    <header class="app-header py-4 shadow-lg">
+        <div class="container text-center">
+            <div class="badge-tech mb-2">
+                <i class="bi bi-cpu-fill me-1"></i> OpenCV & Python Engine
+            </div>
+            <h1 class="display-6 fw-bold text-white tracking-tight">Procesamiento de Imágenes con OpenCV</h1>
+            <p class="lead text-muted mb-0 mx-auto" style="max-width: 600px;">
+                Detecta rostros subiendo una foto o directamente en vivo usando tu cámara web.
+            </p>
+        </div>
+    </header>
+
+    <main class="container my-4 flex-grow-1">
+
+        <!-- Selector de modo -->
+        <div class="row justify-content-center mb-4">
+            <div class="col-auto">
+                <div class="mode-selector-wrapper p-1 shadow" role="group" aria-label="Selector de modo de entrada">
+                    <button type="button" id="btnModeUpload" class="btn btn-mode active px-4 py-2">
+                        <i class="bi bi-cloud-upload me-2"></i>Subir Archivo
+                    </button>
+                    <button type="button" id="btnModeCamera" class="btn btn-mode px-4 py-2">
+                        <i class="bi bi-camera-video me-2"></i>Usar Cámara
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4 justify-content-center">
+            <!-- Columna de Controles / Entradas -->
+            <div class="col-lg-5">
+
+                <!-- Sección Subir Archivo -->
+                <div id="sectionUpload" class="card custom-card h-100 shadow-lg border-0">
+                    <div class="card-body d-flex flex-column justify-content-between p-4">
+                        <div id="dropZone"
+                            class="position-relative drop-zone-area rounded-4 p-5 text-center mb-4 transition">
+                            <div class="drop-zone-icon mb-3">
+                                <i class="bi bi-file-earmark-arrow-up display-4 text-info"></i>
+                            </div>
+                            <p class="mb-1 text-light fw-semibold">Arrastra tu imagen aquí</p>
+                            <p class="mb-0 text-muted small">o haz clic para explorar tus archivos</p>
+                            <input type="file" id="fileInput" class="drop-zone-input" accept="image/*"
+                                aria-label="Seleccionar imagen">
+                        </div>
+                        <button id="btnProcess" class="btn btn-action-process w-100 py-3 fw-bold shadow" disabled>
+                            <i class="bi bi-gear-fill me-2"></i>Procesar Imagen
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Sección Cámara Web -->
+                <div id="sectionCamera" class="card custom-card h-100 shadow-lg border-0 d-none">
+                    <div class="card-body text-center p-4 d-flex flex-column justify-content-between">
+                        <div class="webcam-container rounded-4 overflow-hidden shadow-inner d-flex justify-content-center align-items-center mb-3 position-relative"
+                            style="min-height: 280px;">
+                            <div
+                                class="camera-placeholder position-absolute text-muted d-flex flex-column align-items-center">
+                                <i class="bi bi-camera-slash display-5 mb-2"></i>
+                                <span class="small">Cámara apagada</span>
+                            </div>
+                            <video id="webcam" autoplay playsinline muted class="w-100 position-relative z-1"></video>
+                            <canvas id="canvasFrame" width="400" height="300" class="d-none"></canvas>
+                        </div>
+                        <div class="d-flex flex-wrap gap-2 justify-content-center">
+                            <button id="btnStartCamera" class="btn btn-primary px-3 fw-semibold shadow-sm">
+                                <i class="bi bi-play-fill me-1"></i>Encender
+                            </button>
+                            <button id="btnToggleCamera" class="btn btn-warning px-3 fw-semibold shadow-sm text-dark"
+                                style="display: none;">
+                                <i class="bi bi-arrow-repeat me-1"></i>Cambiar
+                            </button>
+                            <button id="btnStopCamera" class="btn btn-danger px-3 fw-semibold shadow-sm" disabled>
+                                <i class="bi bi-stop-fill me-1"></i>Apagar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Columna de Resultados y Previsualización -->
+            <div class="col-lg-7">
+                <div class="card custom-card h-100 shadow-lg border-0">
+                    <div class="card-body p-4 d-flex flex-column justify-content-start">
+
+                        <!-- Métricas / Alerta de resultados -->
+                        <div id="metricsZone"
+                            class="alert alert-metrics d-flex align-items-center mb-4 d-none border-0 shadow-sm"
+                            role="alert">
+                            <div class="me-3 fs-3 text-success">
+                                <i class="bi bi-check-circle-fill"></i>
+                            </div>
+                            <div>
+                                <h6 class="alert-heading fw-bold mb-1 text-white">Resultados del Análisis:</h6>
+                                <p class="mb-0 text-muted">Rostros detectados en la escena: <span id="faceCount"
+                                        class="badge bg-success text-dark fs-6 px-2 py-1 ms-1">0</span></p>
+                            </div>
+                        </div>
+
+                        <div class="row g-3 flex-grow-1">
+                            <!-- Vista Previa Original -->
+                            <div id="boxOriginal" class="col-sm-6 text-center">
+                                <div
+                                    class="preview-box p-3 rounded-4 h-100 d-flex flex-column justify-content-center align-items-center">
+                                    <h6 class="text-muted mb-3 small fw-bold text-uppercase tracking-wider">
+                                        <i class="bi bi-image me-1"></i> Vista Previa / Origen
+                                    </h6>
+                                    <div
+                                        class="image-wrapper d-flex align-items-center justify-content-center flex-grow-1 w-100">
+                                        <img id="imgOriginal" src="" alt="Vista previa"
+                                            class="rounded-3 shadow-sm d-none">
+                                        <div class="placeholder-text text-muted small py-4">Sin imagen seleccionada
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Resultado del Servidor -->
+                            <div class="col-sm-6 text-center mx-auto">
+                                <div class="preview-box p-3 rounded-4 h-100 d-flex flex-column justify-content-center align-items-center position-relative"
+                                    style="min-height: 200px;">
+                                    <h6 class="text-muted mb-3 small fw-bold text-uppercase tracking-wider">
+                                        <i class="bi bi-cpu me-1"></i> Resultado del Servidor
+                                    </h6>
+
+                                    <div
+                                        class="image-wrapper d-flex align-items-center justify-content-center flex-grow-1 w-100 position-relative">
+                                        <img id="imgResult" src="" alt="Detección de rostros"
+                                            class="rounded-3 shadow-sm d-none">
+
+                                        <!-- Loader -->
+                                        <div id="loader" class="spinner-border text-info my-3 d-none" role="status">
+                                            <span class="visually-hidden">Procesando...</span>
+                                        </div>
+
+                                        <div id="resultPlaceholder" class="placeholder-text text-muted small py-4">
+                                            Esperando procesamiento</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="app-footer text-secondary text-center py-4 mt-auto border-top border-dark">
+        <div class="container">
+            <p class="mb-1 small text-muted">&copy; 2026 - Python y Machine Learning</p>
+            <p class="mb-0 small fw-semibold text-info">By Carlos Andrés Castro Jaramillo</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
